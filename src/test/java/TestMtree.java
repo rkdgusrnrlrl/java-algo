@@ -231,7 +231,7 @@ public class TestMtree {
         expect.add(eight);
 
         //when
-        List<MtreeNode> path = findPath(rootFive, eight);
+        List<MtreeNode> path = findPath(rootFive, 8);
 
         //then
         assertThat(path.size(), is(expect.size()));
@@ -240,8 +240,24 @@ public class TestMtree {
         }
     }
 
-    private List<MtreeNode> findPath(MtreeNode<Integer> fromNode, MtreeNode<Integer> toNode) {
-        return null;
+    private List<MtreeNode> findPath(MtreeNode<Integer> fromNode, Integer toValue) {
+        List<MtreeNode> path = new ArrayList<>();
+        vistorTree(fromNode, toValue, path);
+        return path;
+    }
+
+    private void vistorTree(MtreeNode<Integer> fromNode, Integer toValue, List<MtreeNode> path) {
+        Integer value = fromNode.getValue();
+        path.add(fromNode);
+        if (fromNode == null) {
+            path = new ArrayList<>();
+        } else if (value == toValue) {
+
+        } else if (value < toValue) {
+            vistorTree(fromNode.getRight(), toValue, path);
+        } else {
+            vistorTree(fromNode.getLeft(), toValue, path);
+        }
     }
 
 }
