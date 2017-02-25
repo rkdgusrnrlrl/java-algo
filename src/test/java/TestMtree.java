@@ -139,7 +139,7 @@ public class TestMtree {
         * */
 
         //given
-        MtreeNode<Integer> rootFive = new MtreeNode<Integer>(new Integer(5));
+        MtreeNode<Integer> rootFive = new MtreeNode<>(5);
         MtreeNode<Integer> one = new MtreeNode<>(1);
         MtreeNode<Integer> two = new MtreeNode<>(2);
         MtreeNode<Integer> tree = new MtreeNode<>(3);
@@ -177,7 +177,7 @@ public class TestMtree {
         rootFive.putLeft(tree);
         rootFive.putRight(eight);
 
-        MtreeNode<Integer> shouldBeEight = findNodeInteger(rootFive, new Integer(8));
+        MtreeNode<Integer> shouldBeEight = findNodeInteger(rootFive, 8);
         assertThat(shouldBeEight, is(eight));
     }
 
@@ -240,23 +240,57 @@ public class TestMtree {
         }
     }
 
+    @Test
+    public void Root_에서_다른_노드로_가는_경로가_없는_경우_빈_List를_반환함() throws Exception {
+
+        //given
+        MtreeNode<Integer> rootFive = new MtreeNode<Integer>(new Integer(5));
+        MtreeNode<Integer> one = new MtreeNode<>(1);
+        MtreeNode<Integer> two = new MtreeNode<>(2);
+        MtreeNode<Integer> tree = new MtreeNode<>(3);
+        MtreeNode<Integer> four = new MtreeNode<>(4);
+        MtreeNode<Integer> six = new MtreeNode<>(6);
+        MtreeNode<Integer> seven = new MtreeNode<>(7);
+        MtreeNode<Integer> eight = new MtreeNode<>(8);
+        MtreeNode<Integer> nine = new MtreeNode<>(9);
+
+        rootFive.putLeft(four);
+        rootFive.getLeft().putLeft(two);
+        rootFive.getLeft().getLeft().putLeft(one);
+        rootFive.getLeft().getLeft().putRight(tree);
+
+        rootFive.putRight(seven);
+        rootFive.getRight().putLeft(six);
+        rootFive.getRight().putRight(nine);
+        rootFive.getRight().getRight().putLeft(eight);
+
+        //when
+        List<MtreeNode> path = findPath(rootFive, 10);
+
+        //then
+        assertThat(path.size(), is(0));
+    }
+
     private List<MtreeNode> findPath(MtreeNode<Integer> fromNode, Integer toValue) {
         List<MtreeNode> path = new ArrayList<>();
         vistorTree(fromNode, toValue, path);
         return path;
     }
-
+    // fromNode 가 null 인 경우 path = new ArrayList 를 해도 size 3인 리스트가 반환 되어 clear로 처리하니 해결
+    // 아직 이유를 알 수 없음
     private void vistorTree(MtreeNode<Integer> fromNode, Integer toValue, List<MtreeNode> path) {
-        Integer value = fromNode.getValue();
-        path.add(fromNode);
         if (fromNode == null) {
-            path = new ArrayList<>();
-        } else if (value == toValue) {
-
-        } else if (value < toValue) {
-            vistorTree(fromNode.getRight(), toValue, path);
+            path.clear();
         } else {
-            vistorTree(fromNode.getLeft(), toValue, path);
+            path.add(fromNode);
+            Integer value = fromNode.getValue();
+            if (value == toValue) {
+
+            } else if (value < toValue) {
+                vistorTree(fromNode.getRight(), toValue, path);
+            } else {
+                vistorTree(fromNode.getLeft(), toValue, path);
+            }
         }
     }
 
